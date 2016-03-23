@@ -1,4 +1,4 @@
-package com.akkademy.messages.com.akkademy
+package com.akkademy
 
 import akka.actor.Actor
 import akka.event.Logging
