@@ -6,7 +6,7 @@ import akka.testkit.TestActorRef
 import akka.util.Timeout
 
 import scala.concurrent.duration._
-import com.akkademy.messages.{GetRequest, KeyNotFoundException, SetRequest}
+import com.akkademy.messages._
 import org.scalatest.{FunSpecLike, Matchers}
 
 import scala.concurrent.Await
@@ -45,6 +45,44 @@ class AkkademyDbSpec extends FunSpecLike with Matchers {
           intercept[KeyNotFoundException] {
             Await.result(actorRef ? GetRequest("key"), 1 second).asInstanceOf[String]
           }
+        }
+      }
+    }
+    describe("given SetIfNotExists") {
+      describe("given key does not exist") {
+        it("should place key/value into map") {
+          val actorRef = TestActorRef(new AkkademyDb)
+          actorRef ! SetIfNotExists("key", "value")
+          val akkademyDb = actorRef.underlyingActor
+          akkademyDb.map.get("key") should equal(Some("value"))
+        }
+      }
+      describe("given key exists") {
+        it("should not replace existing value") {
+          val actorRef = TestActorRef(new AkkademyDb)
+          actorRef.underlyingActor.map.put("key", "value")
+          actorRef ! SetIfNotExists("key", "another value")
+          val akkademyDb = actorRef.underlyingActor
+          akkademyDb.map.get("key") should equal(Some("value"))
+        }
+      }
+    }
+    describe("given Delete") {
+      describe("give key exists") {
+        it("should remove key/value pair") {
+          val actorRef = TestActorRef(new AkkademyDb)
+          actorRef.underlyingActor.map.put("key", "value")
+          actorRef ! Delete("key")
+
+          intercept[KeyNotFoundException] {
+            Await.result(actorRef ? GetRequest("key"), 1 second).asInstanceOf[String]
+          }
+        }
+      }
+      describe("given key does not exist") {
+        it("should not fail") {
+          val actorRef = TestActorRef(new AkkademyDb)
+          actorRef ! Delete("key")
         }
       }
     }
