@@ -3,4 +3,4 @@ package com.akkademy.messages
 /**
   * @author travisboettcher
   */
-case class KeyNotFoundResponse() extends Exception
+case class KeyNotFoundException(key: String) extends Exception
