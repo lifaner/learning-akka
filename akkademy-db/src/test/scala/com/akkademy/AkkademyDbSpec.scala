@@ -6,7 +6,7 @@ import akka.testkit.TestActorRef
 import akka.util.Timeout
 
 import scala.concurrent.duration._
-import com.akkademy.messages.{GetRequest, KeyNotFoundResponse, SetRequest}
+import com.akkademy.messages.{GetRequest, KeyNotFoundException, SetRequest}
 import org.scalatest.{FunSpecLike, Matchers}
 
 import scala.concurrent.Await
@@ -42,7 +42,7 @@ class AkkademyDbSpec extends FunSpecLike with Matchers {
       describe("given key doesn't exist") {
         it("should return KeyNotFoundResponse") {
           val actorRef = TestActorRef(new AkkademyDb)
-          intercept[KeyNotFoundResponse] {
+          intercept[KeyNotFoundException] {
             Await.result(actorRef ? GetRequest("key"), 1 second).asInstanceOf[String]
           }
         }

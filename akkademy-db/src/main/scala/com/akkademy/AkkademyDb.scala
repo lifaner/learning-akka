@@ -2,7 +2,7 @@ package com.akkademy
 
 import akka.actor.{Actor, ActorSystem, Props, Status}
 import akka.event.Logging
-import com.akkademy.messages.{GetRequest, KeyNotFoundException, KeyNotFoundResponse, SetRequest}
+import com.akkademy.messages.{GetRequest, KeyNotFoundException, SetRequest}
 
 import scala.collection.mutable
 
